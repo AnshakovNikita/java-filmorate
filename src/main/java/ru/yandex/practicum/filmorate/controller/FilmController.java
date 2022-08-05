@@ -20,6 +20,10 @@ public class FilmController {
         return films;
     }
 
+    private long getNextId() {
+        return filmId++;
+    }
+
 
     public Film validation(Film film) throws ValidationException {
 
@@ -61,9 +65,8 @@ public class FilmController {
         validation(film);
 
 
-        film.setId(filmId);
+        film.setId(getNextId());
         films.put(filmId, film);
-        filmId++;
 
         log.info(String.valueOf(film));
         log.info("Объект /film создан");

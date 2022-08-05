@@ -19,6 +19,10 @@ public class UserController {
         return users;
     }
 
+    private long getNextId() {
+        return userId++;
+    }
+
     public User validation(User user) throws ValidationException {
         if(user.getEmail().isEmpty() || !user.getEmail().contains("@")) {
             String error = "email не может быть пустым и должен содержать @";
@@ -61,7 +65,7 @@ public class UserController {
 
         validation(user);
 
-        user.setId(userId);
+        user.setId(getNextId());
         users.put(userId, user);
         userId++;
 
