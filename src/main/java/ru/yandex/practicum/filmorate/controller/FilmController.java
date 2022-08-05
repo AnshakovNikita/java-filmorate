@@ -13,7 +13,7 @@ import java.util.HashMap;
 public class FilmController {
 
     private HashMap<Long, Film> films = new HashMap();
-    private long filmId = 1;
+    private long filmId = 0;
     private LocalDate validationReleaseDate = LocalDate.of(1895, 1, 28);
 
     public HashMap<Long, Film> getFilms() {
