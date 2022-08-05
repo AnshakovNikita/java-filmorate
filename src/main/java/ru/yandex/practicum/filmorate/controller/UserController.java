@@ -12,7 +12,7 @@ import java.util.HashMap;
 @Slf4j
 public class UserController {
     private HashMap<Long, User> users = new HashMap<>();
-    private long userId = 1;
+    private long userId = 0;
     private LocalDate validationBirthday = LocalDate.now();
 
     public HashMap<Long, User> getUsers() {
