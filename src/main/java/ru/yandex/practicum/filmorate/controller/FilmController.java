@@ -6,6 +6,7 @@ import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 
 import java.time.LocalDate;
+import java.util.Collection;
 import java.util.HashMap;
 
 @RestController
@@ -13,7 +14,7 @@ import java.util.HashMap;
 public class FilmController {
 
     private HashMap<Long, Film> films = new HashMap();
-    private long filmId = 0;
+    private long filmId = 1;
     private LocalDate validationReleaseDate = LocalDate.of(1895, 1, 28);
 
     public HashMap<Long, Film> getFilms() {
@@ -23,6 +24,7 @@ public class FilmController {
     private long getNextId() {
         return filmId++;
     }
+
 
 
     public Film validation(Film film) throws ValidationException {
@@ -55,18 +57,20 @@ public class FilmController {
         }
 
     @GetMapping("/films")
-    public HashMap<Long, Film> findAllFilms() {
-        return films;
+    public Collection<Film> findAllFilms() {
+        return films.values();
     }
 
-    @PostMapping(value = "/film")
+    @PostMapping(value = "/films")
     public Film addFilm(@RequestBody Film film) throws ValidationException {
 
         validation(film);
 
+        long id = getNextId();
 
-        film.setId(getNextId());
-        films.put(filmId, film);
+        film.setId(id);
+        films.put(film.getId(), film);
+        filmId++;
 
         log.info(String.valueOf(film));
         log.info("Объект /film создан");
@@ -74,7 +78,7 @@ public class FilmController {
         return film;
     }
 
-    @PutMapping(value = "/film")
+    @PutMapping(value = "/films")
     public Film updateFilm(@RequestBody Film film) throws ValidationException {
 
         validation(film);

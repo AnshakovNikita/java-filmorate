@@ -6,13 +6,14 @@ import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 
 import java.time.LocalDate;
+import java.util.Collection;
 import java.util.HashMap;
 
 @RestController
 @Slf4j
 public class UserController {
     private HashMap<Long, User> users = new HashMap<>();
-    private long userId = 0;
+    private long userId = 1;
     private LocalDate validationBirthday = LocalDate.now();
 
     public HashMap<Long, User> getUsers() {
@@ -22,6 +23,8 @@ public class UserController {
     private long getNextId() {
         return userId++;
     }
+
+
 
     public User validation(User user) throws ValidationException {
         if(user.getEmail().isEmpty() || !user.getEmail().contains("@")) {
@@ -42,12 +45,6 @@ public class UserController {
             throw new ValidationException(error);
         }
 
-        if(user.getName().contains(" ")) {
-            String error = "В имени не должно быть пробелов";
-            log.warn(error);
-            throw new ValidationException(error);
-        }
-
         if(user.getName().isEmpty()) {
             user.setName(user.getLogin());
         }
@@ -56,18 +53,19 @@ public class UserController {
     }
 
     @GetMapping("/users")
-    public HashMap<Long, User> findAll() {
-        return users;
+    public Collection<User> findAll() {
+        return users.values();
     }
 
-    @PostMapping(value = "/user")
+    @PostMapping(value = "/users")
     public User addUser(@RequestBody User user) throws ValidationException {
 
         validation(user);
 
-        user.setId(getNextId());
-        users.put(userId, user);
-        userId++;
+        long id = getNextId();
+
+        user.setId(id);
+        users.put(user.getId(), user);
 
         log.info(String.valueOf(user));
         log.info("Объект /user создан");
@@ -75,7 +73,7 @@ public class UserController {
         return user;
     }
 
-    @PutMapping(value = "/user")
+    @PutMapping(value = "/users")
     public User updateUser(@RequestBody User user) throws ValidationException {
 
         validation(user);
