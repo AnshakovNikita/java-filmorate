@@ -1,16 +1,23 @@
 package ru.yandex.practicum.filmorate.controllers;
 
+import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.yandex.practicum.filmorate.controller.FilmController;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.service.FilmService;
+import ru.yandex.practicum.filmorate.storage.InMemoryFilmStorage;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.time.LocalDate;
 
+@RequiredArgsConstructor
 public class FilmControllerTest {
-    FilmController filmController = new FilmController();
+    InMemoryFilmStorage inMemoryFilmStorage = new InMemoryFilmStorage();
+    FilmService filmService = new FilmService(inMemoryFilmStorage);
+    FilmController filmController = new FilmController(filmService);
     Film testFilm = new Film();
 
     @BeforeEach
@@ -25,7 +32,7 @@ public class FilmControllerTest {
 
     @Test
     public void shouldBeEmpty() {
-        assertFalse(filmController.getFilms().isEmpty());
+        assertFalse(inMemoryFilmStorage.getFilms().isEmpty());
     }
 
     @Test
