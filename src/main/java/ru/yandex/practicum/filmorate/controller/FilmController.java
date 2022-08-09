@@ -1,7 +1,6 @@
 package ru.yandex.practicum.filmorate.controller;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
@@ -12,7 +11,6 @@ import javax.validation.Valid;
 import java.util.Collection;
 
 @RestController
-@Slf4j
 @RequiredArgsConstructor
 @RequestMapping("/films")
 public class FilmController {
@@ -20,23 +18,23 @@ public class FilmController {
     private final FilmService filmService;
 
     @GetMapping
-    public Collection<Film> findAllFilms() {
-        return filmService.findAllFilms();
+    public Collection<Film> findAll() {
+        return filmService.findAll();
     }
 
     @GetMapping("/{filmId}")
-    public Film getFilm(@PathVariable("filmId") Long id) {
-        return filmService.findFilm(id);
+    public Film get(@PathVariable("filmId") Long id) {
+        return filmService.find(id);
     }
 
     @PostMapping
-    public Film addFilm(@Valid @RequestBody Film film) throws ValidationException {
-        return filmService.addFilm(film);
+    public Film add(@Valid @RequestBody Film film) throws ValidationException {
+        return filmService.add(film);
     }
 
     @PutMapping
-    public Film updateFilm(@Valid @RequestBody Film film) throws ValidationException {
-        return filmService.updateFilm(film);
+    public Film update(@Valid @RequestBody Film film) throws ValidationException {
+        return filmService.update(film);
     }
 
     @PutMapping("/{filmId}/like/{userId}")

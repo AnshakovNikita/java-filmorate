@@ -8,17 +8,17 @@ import java.util.HashMap;
 
 public interface FilmStorage {
 
-    HashMap<Long, Film> getFilms();
+    HashMap<Long, Film> get();
 
-    Collection<Film> findAllFilms();
+    Collection<Film> findAll();
 
-    Film addFilm(Film film) throws ValidationException;
+    Film add(Film film) throws ValidationException;
 
-    Film findFilm(Long id);
+    Film find(Long id);
 
-    Film updateFilm(Film film) throws ValidationException;
+    Film update(Film film) throws ValidationException;
 
-    void deleteFilms();
+    void deleteAll();
 
-    void deleteFilm(Film film);
+    void delete(Film film);
 }

@@ -23,7 +23,7 @@ public class InMemoryFilmStorage implements FilmStorage {
     private LocalDate validationReleaseDate = LocalDate.of(1895, 1, 28);
 
     @Override
-    public HashMap<Long, Film> getFilms() {
+    public HashMap<Long, Film> get() {
         return films;
     }
 
@@ -31,7 +31,7 @@ public class InMemoryFilmStorage implements FilmStorage {
         return filmId++;
     }
 
-    public Film validation(Film film) throws ValidationException {
+    private Film validation(Film film) throws ValidationException {
 
         if(film.getName() == null || film.getName().isEmpty()) {
             String error = "Название фильма не может быть пустым";
@@ -61,12 +61,12 @@ public class InMemoryFilmStorage implements FilmStorage {
     }
 
     @Override
-    public Collection<Film> findAllFilms() {
+    public Collection<Film> findAll() {
         return films.values();
     }
 
     @Override
-    public Film addFilm(Film film) throws ValidationException {
+    public Film add(Film film) throws ValidationException {
 
         validation(film);
 
@@ -75,16 +75,15 @@ public class InMemoryFilmStorage implements FilmStorage {
         film.setId(id);
         films.put(film.getId(), film);
 
-        log.info(String.valueOf(film));
-        log.info("Объект /film создан");
+        log.info(film + " Объект /film создан");
 
         return film;
     }
 
     @Override
-    public Film findFilm(Long id) {
+    public Film find(Long id) {
         if(id <= 0) {
-            String error = String.format("id не может быть отрицательным");
+            String error = "id не может быть отрицательным";
             log.error(error);
             throw new NotFoundException(error);
         }
@@ -92,14 +91,13 @@ public class InMemoryFilmStorage implements FilmStorage {
     }
 
     @Override
-    public Film updateFilm(Film film) throws ValidationException {
+    public Film update(Film film) throws ValidationException {
 
         validation(film);
 
         if(films.containsKey(film.getId())) {
             films.put(film.getId(), film);
-            log.info(String.valueOf(film));
-            log.info("Объект /user обновлен");
+            log.info(film + " Объект /user обновлен");
         } else {
             throw new NotFoundException("Нет такого фильма.");
         }
@@ -108,14 +106,13 @@ public class InMemoryFilmStorage implements FilmStorage {
     }
 
     @Override
-    public void deleteFilms() {
+    public void deleteAll() {
         films.clear();
         log.info("Список фильмов очищен");
     }
 
     @Override
-    public void deleteFilm(Film film) {
-        log.info(String.valueOf(film));
+    public void delete(Film film) {
         films.remove(film.getId());
         log.info("Объект /film удален");
     }

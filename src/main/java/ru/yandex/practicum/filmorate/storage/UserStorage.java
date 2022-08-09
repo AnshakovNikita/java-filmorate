@@ -4,18 +4,21 @@ import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 
 import java.util.Collection;
+import java.util.HashMap;
 
 public interface UserStorage {
 
     Collection<User> findAll();
 
-    User findUser(Long id);
+    User find(Long id);
 
-    User addUser(User user) throws ValidationException;
+    User add(User user) throws ValidationException;
 
-    User updateUser(User user) throws ValidationException;
+    User update(User user) throws ValidationException;
 
-    void deleteUsers();
+    void deleteAll();
 
-    void deleteUser(User user);
+    void delete(User user);
+
+    HashMap<Long, User> get();
 }

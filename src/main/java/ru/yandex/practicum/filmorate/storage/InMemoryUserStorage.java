@@ -21,7 +21,8 @@ public class InMemoryUserStorage implements UserStorage {
     private long userId = 1;
     private LocalDate validationBirthday = LocalDate.now();
 
-    public HashMap<Long, User> getUsers() {
+    @Override
+    public HashMap<Long, User> get() {
         return users;
     }
 
@@ -30,7 +31,7 @@ public class InMemoryUserStorage implements UserStorage {
     }
 
 
-    public User validation(User user) throws ValidationException {
+    private User validation(User user) throws ValidationException {
         if(user.getEmail().isEmpty() || !user.getEmail().contains("@")) {
             String error = "email не может быть пустым и должен содержать @";
             log.warn(error);
@@ -62,7 +63,7 @@ public class InMemoryUserStorage implements UserStorage {
     }
 
     @Override
-    public User findUser(Long id)  {
+    public User find(Long id)  {
         if(!users.containsKey(id)) {
             log.error("Пользователь ненайден.");
             throw new NotFoundException("Пользователь ненайден.");
@@ -71,7 +72,7 @@ public class InMemoryUserStorage implements UserStorage {
     }
 
     @Override
-    public User addUser(User user) throws ValidationException {
+    public User add(User user) throws ValidationException {
         validation(user);
 
         long id = getNextId();
@@ -79,20 +80,18 @@ public class InMemoryUserStorage implements UserStorage {
         user.setId(id);
         users.put(user.getId(), user);
 
-        log.info(String.valueOf(user));
-        log.info("Объект /user создан");
+        log.info(user + " Объект /user создан");
 
         return user;
     }
 
     @Override
-    public User updateUser(User user) throws ValidationException {
+    public User update(User user) throws ValidationException {
         validation(user);
 
         if(users.containsKey(user.getId())) {
             users.put(user.getId(), user);
-            log.info(String.valueOf(user));
-            log.info("Объект /user обновлен");
+            log.info(user + " Объект /user обновлен");
         } else {
             log.error("Пользователь ненайден.");
             throw new NotFoundException("Пользователь ненайден.");
@@ -103,14 +102,13 @@ public class InMemoryUserStorage implements UserStorage {
     }
 
     @Override
-    public void deleteUsers() {
+    public void deleteAll() {
         users.clear();
         log.info("список пользователей очищен");
     }
 
     @Override
-    public void deleteUser(User user) {
-        log.info(String.valueOf(user));
+    public void delete(User user) {
         users.remove(user.getId());
         log.info("Объект /user удален");
     }

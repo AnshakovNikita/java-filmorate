@@ -1,7 +1,6 @@
 package ru.yandex.practicum.filmorate.controller;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
@@ -12,7 +11,6 @@ import javax.validation.Valid;
 import java.util.Collection;
 
 @RestController
-@Slf4j
 @RequiredArgsConstructor
 @RequestMapping("/users")
 public class UserController {
@@ -26,17 +24,17 @@ public class UserController {
 
     @GetMapping("/{userId}")
     public User getUser(@PathVariable("userId") Long id) {
-        return userService.findUser(id);
+        return userService.find(id);
     }
 
     @PostMapping
     public User addUser(@Valid @RequestBody User user) throws ValidationException {
-        return userService.addUser(user);
+        return userService.add(user);
     }
 
     @PutMapping
     public User updateUser(@Valid @RequestBody User user) throws ValidationException {
-        return userService.updateUser(user);
+        return userService.update(user);
     }
 
     @PutMapping("/{userId}/friends/{friendId}")

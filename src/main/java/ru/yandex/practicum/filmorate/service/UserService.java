@@ -29,66 +29,66 @@ public class UserService {
         return userStorage.findAll();
     }
 
-    public User findUser(Long id) {
-        return userStorage.findUser(id);
+    public User find(Long id) {
+        return userStorage.find(id);
     }
 
-    public User addUser(User user) throws ValidationException {
-        return userStorage.addUser(user);
+    public User add(User user) throws ValidationException {
+        return userStorage.add(user);
     }
 
-    public User updateUser(User user) throws ValidationException {
-        return userStorage.updateUser(user);
+    public User update(User user) throws ValidationException {
+        return userStorage.update(user);
     }
 
-    public void deleteUsers() {
-        userStorage.deleteUsers();
+    public void deleteAll() {
+        userStorage.deleteAll();
     }
 
-    public void deleteUser(User user) {
-        userStorage.deleteUser(user);
+    public void delete(User user) {
+        userStorage.delete(user);
     }
 
     public void addFriend(Long userId, Long friendId) throws ValidationException {
         validId(userId);
         validId(friendId);
 
-        if(userStorage.findUser(userId).getFriends().contains(friendId)) {
-            String error = String.format("Пользователи уже друзья");
+        if(userStorage.find(userId).getFriends().contains(friendId)) {
+            String error = "Пользователи уже друзья";
             log.error(error);
             throw new ValidationException(error);
         }
 
-        userStorage.findUser(userId).setFriends(friendId);
-        userStorage.findUser(friendId).setFriends(userId);
+        userStorage.find(userId).setFriends(friendId);
+        userStorage.find(friendId).setFriends(userId);
     }
 
     public void deleteFriend(Long userId, Long friendId) {
         validId(userId);
         validId(friendId);
 
-        if(!userStorage.findUser(userId).getFriends().contains(friendId)) {
-            String error = String.format("Пользователи не дружат");
+        if(!userStorage.find(userId).getFriends().contains(friendId)) {
+            String error = "Пользователи не дружат";
             log.error(error);
             throw new NotFoundException(error);
         }
 
-        userStorage.findUser(userId).getFriends().remove(friendId);
-        userStorage.findUser(friendId).getFriends().remove(userId);
+        userStorage.find(userId).getFriends().remove(friendId);
+        userStorage.find(friendId).getFriends().remove(userId);
     }
 
     public List<User> usersFriends(Long userId) {
 
         List<User> result = new ArrayList<>();
 
-        if(userStorage.findUser(userId).getFriends().isEmpty()) {
-            String error = String.format("У пользователя нет друзей");
+        if(userStorage.find(userId).getFriends().isEmpty()) {
+            String error = "У пользователя нет друзей";
             log.error(error);
             return result;
         }
 
-        for (Long friendsId : userStorage.findUser(userId).getFriends())
-            result.add(userStorage.findUser(friendsId));
+        for (Long friendsId : userStorage.find(userId).getFriends())
+            result.add(userStorage.find(friendsId));
 
         return result;
     }
@@ -100,22 +100,22 @@ public class UserService {
 
         List<User> result = new ArrayList<>();
 
-        if(userStorage.findUser(userID1).getFriends().isEmpty()
-                || userStorage.findUser(userID2).getFriends().isEmpty()) {
-            String error = String.format("у одного из пользователей нет друзей");
+        if(userStorage.find(userID1).getFriends().isEmpty()
+                || userStorage.find(userID2).getFriends().isEmpty()) {
+            String error = "у одного из пользователей нет друзей";
             log.error(error);
             return result;
         }
 
-        Set<Long> friendListUser1 = new HashSet<>(userStorage.findUser(userID1).getFriends());
-        Set<Long> friendListUser2 = new HashSet<>(userStorage.findUser(userID2).getFriends());
+        Set<Long> friendListUser1 = new HashSet<>(userStorage.find(userID1).getFriends());
+        Set<Long> friendListUser2 = new HashSet<>(userStorage.find(userID2).getFriends());
         friendListUser1.retainAll(friendListUser2);
 
         for (Long userID : friendListUser1)
-            result.add(userStorage.findUser(userID));
+            result.add(userStorage.find(userID));
 
         if(friendListUser1.isEmpty()) {
-            String error = String.format("нет общих друзей");
+            String error = "нет общих друзей";
             log.error(error);
             return result;
         }
