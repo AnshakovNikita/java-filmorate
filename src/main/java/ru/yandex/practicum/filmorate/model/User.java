@@ -1,17 +1,16 @@
 package ru.yandex.practicum.filmorate.model;
 
 import lombok.Data;
-import lombok.NonNull;
 
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
+import javax.validation.constraints.*;
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 
 @Data
 public class User {
     @NotNull
+    @Min(1)
     private long id;
 
     @NotNull
@@ -28,4 +27,14 @@ public class User {
 
     @NotNull
     private LocalDate birthday;
+
+    private Set<Long> friends = new HashSet<>();
+
+    public Set<Long> getFriends() {
+        return friends;
+    }
+
+    public void setFriends(Long userId) {
+        friends.add(userId);
+    }
 }

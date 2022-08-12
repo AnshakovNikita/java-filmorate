@@ -1,16 +1,23 @@
 package ru.yandex.practicum.filmorate.controllers;
+import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.yandex.practicum.filmorate.controller.UserController;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.service.UserService;
+import ru.yandex.practicum.filmorate.storage.InMemoryUserStorage;
+import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.time.LocalDate;
 
+@RequiredArgsConstructor
 public class UserControllerTest {
-    UserController userController = new UserController();
+    UserStorage userStorage = new InMemoryUserStorage();
+    UserService userService = new UserService(userStorage);
+    UserController userController = new UserController(userService);
     User testUser = new User();
 
     @BeforeEach
@@ -25,7 +32,7 @@ public class UserControllerTest {
     @Test
     public void shouldBeEmpty() throws ValidationException {
         userController.addUser(testUser);
-        assertFalse(userController.getUsers().isEmpty());
+        assertFalse(userStorage.get().isEmpty());
     }
 
     @Test
