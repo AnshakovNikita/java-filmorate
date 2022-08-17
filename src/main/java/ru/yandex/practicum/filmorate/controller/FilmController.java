@@ -40,14 +40,14 @@ public class FilmController {
     @PutMapping("/{filmId}/like/{userId}")
     @ResponseStatus(HttpStatus.OK)
     public void addLike(@Valid @PathVariable("filmId") Long filmId,
-                        @Valid @PathVariable("userId") Long userId) throws ValidationException {
+                        @Valid @PathVariable("userId") Long userId) {
         filmService.addLike(filmId, userId);
     }
 
     @DeleteMapping("/{filmId}/like/{userId}")
     @ResponseStatus(HttpStatus.OK)
     public void deleteLike(@Valid @PathVariable("filmId") Long filmId,
-                             @Valid @PathVariable("userId") Long userId) throws ValidationException {
+                           @Valid @PathVariable("userId") Long userId) {
         filmService.deleteLike(filmId, userId);
     }
 

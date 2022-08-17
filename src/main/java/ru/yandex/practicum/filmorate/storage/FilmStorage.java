@@ -4,11 +4,8 @@ import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 
 import java.util.Collection;
-import java.util.HashMap;
 
 public interface FilmStorage {
-
-    HashMap<Long, Film> get();
 
     Collection<Film> findAll();
 
@@ -18,7 +15,12 @@ public interface FilmStorage {
 
     Film update(Film film) throws ValidationException;
 
-    void deleteAll();
+    boolean delete(long id);
 
-    void delete(Film film);
+    void addLike(Long filmId, Long userId);
+
+    void deleteLike(Long filmId, Long userId);
+
+    Collection<Film> popular(Integer count);
+
 }

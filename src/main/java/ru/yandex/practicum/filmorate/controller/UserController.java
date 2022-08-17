@@ -40,7 +40,7 @@ public class UserController {
     @PutMapping("/{userId}/friends/{friendId}")
     @ResponseStatus(HttpStatus.OK)
     public void findFriend(@Valid @PathVariable("userId") Long userId,
-                          @Valid @PathVariable("friendId") Long friendId) throws ValidationException {
+                           @Valid @PathVariable("friendId") Long friendId) {
         userService.addFriend(userId, friendId);
     }
 

@@ -3,9 +3,11 @@ package ru.yandex.practicum.filmorate.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import ru.yandex.practicum.filmorate.DAO.GenreDao;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
 
 import java.util.*;
@@ -16,13 +18,21 @@ import java.util.*;
 public class FilmService {
 
     private final FilmStorage filmStorage;
+    private final GenreDao genreDao;
 
     public Collection<Film> findAll() {
         return filmStorage.findAll();
     }
 
     public Film add(Film film) throws ValidationException {
-        return filmStorage.add(film);
+        Film newFilm = filmStorage.add(film);
+        film.setId(newFilm.getId());
+        if (film.getGenres() != null) {
+            for (Genre genre : film.getGenres()) {
+                genreDao.recordGenresToFilm(film.getId(), genre.getId());
+            }
+        }
+        return film;
     }
 
     public Film find(Long id) {
@@ -30,60 +40,29 @@ public class FilmService {
     }
 
     public Film update(Film film) throws ValidationException {
-        return filmStorage.update(film);
-    }
-
-    public void deleteAll() {
-        filmStorage.deleteAll();
-    }
-
-    public void delete(Film film) {
-        filmStorage.delete(film);
-    }
-
-    public void addLike(Long filmId, Long userId) throws ValidationException {
-        if(filmStorage.find(filmId) == null) {
-            String error = String.format("Нет фильма с id=%s", filmId);
-            log.error(error);
-            throw new NotFoundException(error);
+        genreDao.deleteGenresToFilm(film.getId());
+        filmStorage.update(film);
+        if (film.getGenres() != null) {
+            for (Genre genre : film.getGenres()) {
+                genreDao.recordGenresToFilm(film.getId(), genre.getId());
+            }
         }
+        return film;
+    }
 
-        if(filmStorage.find(filmId).getLikes().contains(userId)) {
-            String error = "Пользователи уже лайкнул этот фильм";
-            log.error(error);
-            throw new ValidationException(error);
-        }
+    public boolean delete(long id) {
+        return filmStorage.delete(id);
+    }
 
-        filmStorage.find(filmId).setLikes(userId);
-
+    public void addLike(Long filmId, Long userId) {
+        filmStorage.addLike(filmId, userId);
     }
 
     public void deleteLike(Long filmId, Long userId) {
-        if(filmStorage.findAll().contains(filmId) || filmId <= 0) {
-            String error = String.format("Нет фильма с id=%s", filmId);
-            log.error(error);
-            throw new NotFoundException(error);
-        }
-
-        if(!filmStorage.find(filmId).getLikes().contains(userId)) {
-            String error = "Пользователь не лайкал этот фильм";
-            log.error(error);
-            throw new NotFoundException(error);
-        }
-
-        filmStorage.find(filmId).getLikes().remove(userId);
+        filmStorage.deleteLike(filmId, userId);
     }
 
-    public List<Film> popular(Integer count) {
-
-        List<Film> films = new ArrayList<>(filmStorage.get().values());
-
-        Collections.sort(films, (film1, film2) -> film2.getLikes().size() - film1.getLikes().size());
-
-        if(count > films.size()) {
-            return films.subList(0, films.size());
-        }
-        
-        return films.subList(0, count);
+    public Collection<Film> popular(Integer count) {
+        return filmStorage.popular(count);
     }
 }
