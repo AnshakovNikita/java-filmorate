@@ -1,4 +1,4 @@
-package ru.yandex.practicum.filmorate.DAO;
+package ru.yandex.practicum.filmorate.storage.DAO;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -70,7 +70,7 @@ public class UserDbStorage implements UserStorage {
     }
 
     @Override
-    public User find(Long id) {
+    public User find(long id) {
         if(id > 0) {
             String sqlQuery = "select *" +
                     "from USERS where USER_ID = ?";
@@ -139,47 +139,22 @@ public class UserDbStorage implements UserStorage {
     }
 
     @Override
-    public void addFriend(Long userId, Long friendId) {
-        if(userId > 0 && friendId > 0) {
-            String sqlQuery = "INSERT INTO FRIENDS (USER_ID, FRIEND_ID) VALUES (?, ?)";
-            jdbcTemplate.update(sqlQuery, userId, friendId);
-        } else {
-            String error = "ошибка";
-            log.error(error);
-            throw new NotFoundException(error);
-        }
+    public User addFriend(long id, long friendId) {
+        return null;
     }
 
     @Override
-    public void deleteFriend(Long userId, Long friendId) {
-        String sql = "DELETE FROM FRIENDS " +
-                "WHERE USER_ID = ? AND FRIEND_ID = ?";
-        int result = jdbcTemplate.update(sql, userId, friendId);
-        if (result != 1) {
-            String error = "ошибка удаления";
-            log.error(error);
-            throw new NotFoundException(error);
-        }
+    public User deleteFriend(long id, long friendId) {
+        return null;
     }
 
-    public Collection<User> usersFriends(Long userId) {
-            String sql = "select u.* from USERS as u " +
-                    "left join FRIENDS F on u.USER_ID = F.FRIEND_ID " +
-                    "WHERE f.USER_ID = ?";
-
-            List<User> result = jdbcTemplate.query(sql, this::mapRowToUser, userId);
-
-            return result;
+    @Override
+    public List<User> usersFriends(long id) {
+        return null;
     }
 
-    public Collection<User> listCommonFriends(Long userID1, Long userID2) {
-
-        String sql = "SELECT * From USERS where USER_ID IN (SELECT FRIEND_ID " +
-                "FROM FRIENDS where USER_ID = ?) " +
-                "AND USER_ID IN (SELECT FRIEND_ID FROM FRIENDS where USER_ID = ?)";
-
-        List<User> result = jdbcTemplate.query(sql, this::mapRowToUser, userID1, userID2);
-
-        return result;
+    @Override
+    public List<User> listCommonFriends(long id, long otherId) {
+        return null;
     }
 }

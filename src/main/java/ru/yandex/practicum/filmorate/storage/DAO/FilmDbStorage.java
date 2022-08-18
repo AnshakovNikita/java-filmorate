@@ -1,4 +1,4 @@
-package ru.yandex.practicum.filmorate.DAO;
+package ru.yandex.practicum.filmorate.storage.DAO;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,6 +26,8 @@ import java.util.*;
 public class FilmDbStorage implements FilmStorage {
 
     private final GenreDao genreDao;
+
+    private final MpaDao mpaDao;
 
     private final JdbcTemplate jdbcTemplate;
 
@@ -67,19 +69,15 @@ public class FilmDbStorage implements FilmStorage {
     }
 
     private Film mapRowToFilm(ResultSet resultSet, int rowNum) throws SQLException {
-
-        Mpa mpa = new Mpa(resultSet.getInt("rating_id"),
-                resultSet.getString("rating_name"));
-
         Film film = Film.builder()
                 .id(resultSet.getLong("film_id"))
                 .name(resultSet.getString("film_name"))
                 .description(resultSet.getString("film_description"))
                 .releaseDate(resultSet.getDate("releaseDate").toLocalDate())
                 .duration(resultSet.getLong("duration"))
-                .rating(mpa)
                 .build();
         film.setGenres(new LinkedHashSet<>(genreDao.getGenresToFilm(film.getId())));
+        film.setRating(mpaDao.find(resultSet.getLong("rating_id")));
         return film;
     }
 
@@ -170,41 +168,18 @@ public class FilmDbStorage implements FilmStorage {
     }
 
     @Override
-    public void addLike(Long filmId, Long userId) {
-        String sqlQuery = "INSERT INTO LIKES (FILM_ID, USER_ID) VALUES (?, ?)";
-        jdbcTemplate.update(sqlQuery, filmId, userId);
+    public Film addLike(long id, long userId) {
+        return null;
     }
 
     @Override
-    public void deleteLike(Long filmId, Long userId) {
-
-        String sql = "DELETE FROM LIKES " +
-                "WHERE FILM_ID = ? AND USER_ID = ?";
-        int result = jdbcTemplate.update(sql, filmId, userId);
-        if (result != 1) {
-            String error = "ошибка удаления";
-            log.error(error);
-            throw new NotFoundException(error);
-        }
+    public Film deleteLike(long id, long userId) {
+        return null;
     }
 
     @Override
-    public Collection<Film> popular(Integer count) {
-
-        String sql = "select f.*, m.RATING_ID, m.RATING_NAME, COUNT(l.USER_ID) AS count from FILMS AS f " +
-        "LEFT JOIN LIKES AS l ON f.FILM_ID = l.FILM_ID " +
-        "LEFT JOIN MPA AS m ON f.RATING_ID = m.RATING_ID " +
-        "GROUP BY f.FILM_ID " +
-        "ORDER BY count DESC " +
-        "LIMIT 10";
-
-        List<Film> films = jdbcTemplate.query(sql, this::mapRowToFilm);
-
-        if(count > films.size()) {
-            return films.subList(0, films.size());
-        }
-
-        return films.subList(0, count);
+    public List<Film> popular(int count) {
+        return null;
     }
 
 }

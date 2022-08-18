@@ -4,6 +4,7 @@ import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 
 import java.util.Collection;
+import java.util.List;
 
 public interface FilmStorage {
 
@@ -17,10 +18,10 @@ public interface FilmStorage {
 
     boolean delete(long id);
 
-    void addLike(Long filmId, Long userId);
+    Film addLike(long id, long userId);
 
-    void deleteLike(Long filmId, Long userId);
+    Film deleteLike(long id, long userId);
 
-    Collection<Film> popular(Integer count);
+    List<Film> popular(int count);
 
 }

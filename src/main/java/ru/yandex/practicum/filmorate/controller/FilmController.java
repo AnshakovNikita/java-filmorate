@@ -3,6 +3,7 @@ package ru.yandex.practicum.filmorate.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.service.FilmService;
@@ -39,8 +40,8 @@ public class FilmController {
 
     @PutMapping("/{filmId}/like/{userId}")
     @ResponseStatus(HttpStatus.OK)
-    public void addLike(@Valid @PathVariable("filmId") Long filmId,
-                        @Valid @PathVariable("userId") Long userId) {
+    public void addLike(@Valid @PathVariable("filmId") long filmId,
+                        @Valid @PathVariable("userId") long userId) {
         filmService.addLike(filmId, userId);
     }
 
@@ -52,7 +53,11 @@ public class FilmController {
     }
 
     @GetMapping("/popular")
-    public Collection<Film> popularFilms(@RequestParam(value = "count", defaultValue = "10", required = false) Integer count) {
+    public Collection<Film> popularFilms(@RequestParam(value = "count", defaultValue = "10", required = false)
+                                             Integer count) {
+        if (count < 0) {
+            throw new NotFoundException("Параметр count имеет отрицательное значение.");
+        }
         return filmService.popular(count);
     }
 }

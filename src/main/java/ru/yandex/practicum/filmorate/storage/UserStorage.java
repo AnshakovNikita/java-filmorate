@@ -4,12 +4,13 @@ import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 
 import java.util.Collection;
+import java.util.List;
 
 public interface UserStorage {
 
     Collection<User> findAll();
 
-    User find(Long id);
+    User find(long id);
 
     User add(User user) throws ValidationException;
 
@@ -17,12 +18,12 @@ public interface UserStorage {
 
     boolean delete(long id);
 
-    void addFriend(Long userId, Long friendId);
+    User addFriend(long id, long friendId);
 
-    void deleteFriend(Long userId, Long friendId);
+    User deleteFriend(long id, long otherId);
 
-    Collection<User> usersFriends(Long userId);
+    List<User> listCommonFriends(long id, long otherId);
 
-    Collection<User> listCommonFriends(Long userID1, Long userID2);
+    List<User> usersFriends(long id);
 
 }
