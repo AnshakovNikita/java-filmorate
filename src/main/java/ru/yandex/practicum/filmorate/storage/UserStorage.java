@@ -4,21 +4,26 @@ import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 
 import java.util.Collection;
-import java.util.HashMap;
+import java.util.List;
 
 public interface UserStorage {
 
     Collection<User> findAll();
 
-    User find(Long id);
+    User find(long id);
 
     User add(User user) throws ValidationException;
 
     User update(User user) throws ValidationException;
 
-    void deleteAll();
+    boolean delete(long id);
 
-    void delete(User user);
+    User addFriend(long id, long friendId);
 
-    HashMap<Long, User> get();
+    User deleteFriend(long id, long otherId);
+
+    List<User> listCommonFriends(long id, long otherId);
+
+    List<User> usersFriends(long id);
+
 }
